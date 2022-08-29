@@ -1,0 +1,7 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:colorin-colorado"
+
+    - path: "app/Main.hs"
+      component: "colorin-colorado:exe:colorin-colorado"

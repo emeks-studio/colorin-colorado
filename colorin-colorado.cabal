@@ -1,10 +1,10 @@
 cabal-version: 2.4
 name: colorin-colorado
-version: 2022.8.29.0
+version: 2022.8.29.1
 synopsis: Binaries as 8-bit colored SVGs
 build-type: Simple
 extra-source-files:  
-  CHANGELOG.md
+  README.md
 
 common deps
   default-language: Haskell2010
@@ -19,11 +19,14 @@ common deps
     , bytestring
     , text
     , base
+    , directory
+    , svg-builder
 
 library
   import: deps
   exposed-modules:
-    ColorinColorado.Types
+      ColorinColorado.Types
+    , ColorinColorado.SvgExample 
   build-depends:
       aeson
     , base              
