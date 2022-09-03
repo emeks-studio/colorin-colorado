@@ -1,1 +1,0 @@
-module ColorinColorado.Types where
