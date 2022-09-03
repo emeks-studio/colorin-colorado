@@ -20,7 +20,7 @@ import Data.Aeson
 import qualified Data.Bimap as Bimap
   ( Bimap,
     fromList,
-    keysR,
+    toList,
     lookup,
     lookupR,
   )
@@ -60,9 +60,12 @@ notRepeatedElements list errorMessage =
   if List.Unique.allUnique list then Right () else Left errorMessage
 
 -- JSON representation is just the list of HexColor
+-- Warning: Not use Bimap.keysR, obs that:
+-- "Return all right-hand keys in the bimap in ascending order"
 instance ToJSON SimplePalette256 where
-  toJSON (SimplePalette256 bimap) = toJSON $ Bimap.keysR bimap
+  toJSON (SimplePalette256 bimap) = toJSON $ snd <$> Bimap.toList bimap
 
+-- TODO: Check that parsing is also respecting the array order!
 instance FromJSON SimplePalette256 where
   parseJSON (Array xs) = do
     colors <- mapM parseJSON $ Data.Foldable.toList xs
@@ -70,7 +73,3 @@ instance FromJSON SimplePalette256 where
       Left errorMessage -> fail $ "Decode SimplePalette256: " <> errorMessage
       Right palette -> return palette
   parseJSON _ = fail "Decode SimplePalette256: Expected an array of HexColors"
-
--- TODO: mkSimplePalette256 with shuffle colors!
--- Use shuffleM :: MonadRandom m => [a] -> m [a]
--- ^ lib: random-shuffle

@@ -1,6 +1,6 @@
 cabal-version: 2.4
 name: colorin-colorado
-version: 2022.9.3.1
+version: 2022.9.3.4
 synopsis: Binaries as 8-bit colored SVGs
 build-type: Simple
 extra-source-files:  
@@ -22,6 +22,7 @@ common deps
     , bimap
     , directory
     , svg-builder
+    , safe-exceptions
     , regex-tdfa
     , Unique
 
@@ -29,7 +30,9 @@ library
   import: deps
   exposed-modules:
       ColorinColorado.Types.Colors
+    , ColorinColorado.Types.Palette
     , ColorinColorado.SvgExample 
+    , ColorinColorado.Utils 
   build-depends:
       aeson
     , base              
@@ -41,4 +44,14 @@ executable colorin-colorado
   build-depends:
       colorin-colorado
   hs-source-dirs: app
+  ghc-options: -threaded -O2 -rtsopts
+
+executable gen-shuffle-palette
+  import: deps
+  main-is: Main.hs
+  build-depends:
+      colorin-colorado
+    , random
+    , random-shuffle
+  hs-source-dirs: gen-shuffle-palette
   ghc-options: -threaded -O2 -rtsopts
