@@ -3,9 +3,7 @@
 -- | More docs at https://github.com/diagrams/svg-builder
 module ColorinColorado.SvgExample where
 
-import Control.Exception (catch, throwIO)
 import System.Environment (getArgs)
-import System.IO.Error (isDoesNotExistError)
 import Graphics.Svg
     ( (->>),
       (<<-),
@@ -15,7 +13,6 @@ import Graphics.Svg
       svg11_,
       AttrTag(Fill_, Version_, Width_, Height_, X_),
       Element )
-import System.Directory ( removeFile )
 
 svg :: Element -> Element
 svg content =
@@ -36,9 +33,5 @@ main = do
       filenameInCurrentDirectoryPath = "./" ++ filename
       svgContent :: String
       svgContent = show $ svg contents
-  tryRemoveFileIfExist filenameInCurrentDirectoryPath
+  -- Obs: Completly overrides the existing file
   writeFile filenameInCurrentDirectoryPath svgContent 
-
-tryRemoveFileIfExist :: FilePath -> IO ()
-tryRemoveFileIfExist path =
-  removeFile path `catch` \e -> if isDoesNotExistError e then return () else throwIO e

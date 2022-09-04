@@ -16,10 +16,11 @@ common deps
     -Wmissing-import-lists
   build-depends:
       aeson
-    , bytestring
     , text
     , base
     , bimap
+    , bytestring
+    , conduit
     , directory
     , svg-builder
     , safe-exceptions
@@ -28,14 +29,14 @@ common deps
 
 library
   import: deps
+  ghc-options: 
+    -Wunused-packages
   exposed-modules:
       ColorinColorado.Types.Colors
     , ColorinColorado.Types.Palette
+    , ColorinColorado.SingleLineSvgCodec
     , ColorinColorado.SvgExample 
-    , ColorinColorado.Utils 
-  build-depends:
-      aeson
-    , base              
+    , ColorinColorado.Utils      
   hs-source-dirs: src
 
 executable colorin-colorado

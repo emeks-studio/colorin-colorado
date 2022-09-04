@@ -4,6 +4,7 @@
 
 module ColorinColorado.Types.Colors
   ( HexColor,
+    asText,
     mkHexColor, -- Smart constructor for HexColor
   )
 where
@@ -22,6 +23,9 @@ hexColorRegexValidation = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 
 newtype HexColor = HexColor Text
   deriving stock (Generic, Eq, Ord)
+
+asText :: HexColor -> Text
+asText (HexColor t) = t
 
 mkHexColor :: Text -> Either String HexColor
 mkHexColor v = do
