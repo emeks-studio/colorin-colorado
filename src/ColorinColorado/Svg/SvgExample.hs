@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | More docs at https://github.com/diagrams/svg-builder
-module ColorinColorado.SvgExample where
+module ColorinColorado.Svg.SvgExample where
 
 import System.Environment (getArgs)
 import Graphics.Svg

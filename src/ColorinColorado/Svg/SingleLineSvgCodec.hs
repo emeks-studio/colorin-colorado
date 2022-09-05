@@ -35,6 +35,7 @@ singleSVGLine colors =
           colors
    in mkSvg totalWidth totalHeight content
 
+-- TODO: Use a logger with different levels: DEBUG, ERROR, etc
 encode :: (MonadUnliftIO m, Palette p) => p -> SvgGeneratorFn -> FilePath -> m ()
 encode palette svgGeneratorFn sourceFilePath = do
   mColors <- colorFileWith palette sourceFilePath
