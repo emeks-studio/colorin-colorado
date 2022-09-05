@@ -4,7 +4,7 @@
 
 module ColorinColorado.Types.Colors
   ( HexColor,
-    asText,
+    toText,
     mkHexColor, -- Smart constructor for HexColor
   )
 where
@@ -24,8 +24,8 @@ hexColorRegexValidation = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 newtype HexColor = HexColor Text
   deriving stock (Generic, Eq, Ord)
 
-asText :: HexColor -> Text
-asText (HexColor t) = t
+toText :: HexColor -> Text
+toText (HexColor t) = t
 
 mkHexColor :: Text -> Either String HexColor
 mkHexColor v = do
@@ -34,6 +34,7 @@ mkHexColor v = do
     then return $ HexColor v
     else Left "Invalid string"
 
+-- (!): Display color with extra quotes!
 instance Show HexColor where
   show (HexColor t) = show t
 

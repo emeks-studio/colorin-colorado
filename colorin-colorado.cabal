@@ -1,6 +1,6 @@
 cabal-version: 2.4
 name: colorin-colorado
-version: 2022.9.3.4
+version: 2022.9.5.0
 synopsis: Binaries as 8-bit colored SVGs
 build-type: Simple
 extra-source-files:  
@@ -34,8 +34,10 @@ library
   exposed-modules:
       ColorinColorado.Types.Colors
     , ColorinColorado.Types.Palette
-    , ColorinColorado.SingleLineSvgCodec
-    , ColorinColorado.SvgExample 
+    , ColorinColorado.Svg.Codec
+    , ColorinColorado.Svg.Common 
+    , ColorinColorado.Svg.SingleLineSvgCodec
+    , ColorinColorado.Svg.SvgExample 
     , ColorinColorado.Utils      
   hs-source-dirs: src
 

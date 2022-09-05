@@ -8,6 +8,8 @@ module ColorinColorado.Types.Palette
     lookupByte,
     SimplePalette256, -- Specific implementation
     mkSimplePalette256, -- Smart constructor for SimplePalette256
+    colorBSWith,
+    colorFileWith
   )
 where
 
@@ -29,6 +31,16 @@ import Data.List.Unique as List.Unique (allUnique)
 import Data.Word (Word8)
 import GHC.Generics (Generic)
 import qualified Data.Foldable (toList)
+import Conduit
+  ( mapC,
+    runConduitRes,
+    sinkList,
+    sourceFileBS,
+    (.|),
+    MonadUnliftIO,
+  )
+import Data.ByteString (ByteString, unpack)
+import Control.Monad (join)
 
 class Palette a where
   lookupHexColor :: a -> Word8 -> Maybe HexColor
@@ -73,3 +85,20 @@ instance FromJSON SimplePalette256 where
       Left errorMessage -> fail $ "Decode SimplePalette256: " <> errorMessage
       Right palette -> return palette
   parseJSON _ = fail "Decode SimplePalette256: Expected an array of HexColors"
+
+colorBSWith :: Palette p => p -> ByteString -> Maybe [HexColor]
+colorBSWith palette bs = do
+  let bytes = unpack bs
+      x = (\byte -> lookupHexColor palette byte) <$> bytes
+      mEncodedBytes = sequence x
+  mEncodedBytes
+
+colorFileWith :: (MonadUnliftIO m, Palette p) => p -> FilePath -> m (Maybe [HexColor])
+colorFileWith palette sourceFilePath = do
+  let color = colorBSWith palette
+  chunks <-
+    runConduitRes $
+      sourceFileBS sourceFilePath .| mapC color .| sinkList
+  let mColoredChunks = sequence chunks
+  let mColoredFile = join <$> mColoredChunks
+  return mColoredFile
