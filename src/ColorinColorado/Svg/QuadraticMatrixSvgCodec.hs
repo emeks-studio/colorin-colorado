@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module ColorinColorado.Svg.SingleLineSvgCodec (main) where
+module ColorinColorado.Svg.QuadraticMatrixSvgCodec (main) where
 
 import ColorinColorado.Svg.Codec (SvgGeneratorFn)
 import ColorinColorado.Svg.Common (mkRect, mkSvg)
@@ -16,24 +16,36 @@ import Data.Aeson (eitherDecodeFileStrict')
 import qualified Data.List as List (foldl', length)
 import System.Environment (getArgs)
 
-singleSVGLine :: SvgGeneratorFn
-singleSVGLine colors =
+quadraticSVGMatrix :: SvgGeneratorFn
+quadraticSVGMatrix colors =
   let totalLength = List.length colors
-      totalWidth = totalLength
-      totalHeight = 1
+      quadraticFactor = ceiling $ sqrt (fromIntegral totalLength :: Double)
+      totalWidth = quadraticFactor
+      totalHeight = quadraticFactor
       widthPerElement = 1
+      heightPerElement = 1
       startingXPosition = 0
-      fixedYPosition = 0
-      (_, content) =
+      startingYPosition = 0
+      (_, _, content) =
         List.foldl'
           ( \acc color ->
-              let (currentXPosition, currentContent) = acc
-                  newContent = mkRect currentXPosition fixedYPosition widthPerElement totalHeight color
-               in (currentXPosition + widthPerElement, currentContent <> newContent)
+              let (currentXPosition, currentYPosition, currentContent) = acc
+                  newContent = mkRect currentXPosition currentYPosition widthPerElement heightPerElement color
+                  (updatedXPosition, updatedYPosition) =
+                    updatePositions currentXPosition currentYPosition widthPerElement heightPerElement quadraticFactor
+               in (updatedXPosition, updatedYPosition, currentContent <> newContent)
           )
-          (startingXPosition, mempty)
+          (startingXPosition, startingYPosition, mempty)
           colors
    in mkSvg totalWidth totalHeight content
+
+updatePositions :: Int -> Int -> Int -> Int -> Int -> (Int, Int)
+updatePositions xPos yPos widthPerElement heightPerElement factor = 
+  if nextXPost < factor then
+    (nextXPost, yPos)
+  else
+    (0, yPos + heightPerElement)
+  where nextXPost = xPos + widthPerElement
 
 -- TODO: Use a logger with different levels: DEBUG, ERROR, etc
 encode :: (MonadUnliftIO m, Palette p) => p -> SvgGeneratorFn -> FilePath -> m ()
@@ -43,6 +55,11 @@ encode palette svgGeneratorFn sourceFilePath = do
     Nothing -> liftIO $ putStrLn "Error while trying to encode"
     Just allColors -> do
       _ <- liftIO $ print allColors
+      let totalLength = List.length allColors
+          quadraticFactor :: Int
+          quadraticFactor = ceiling $ sqrt (fromIntegral totalLength :: Double)
+      _ <- liftIO $ print totalLength
+      _ <- liftIO $ print quadraticFactor
       let encodedSvg = svgGeneratorFn allColors
           writableSvg :: String
           writableSvg = show encodedSvg
@@ -52,4 +69,4 @@ main :: IO ()
 main = do
   [palettePath, sourceFilePath] <- getArgs
   palette <- getOrThrow (eitherDecodeFileStrict' palettePath :: IO (Either String SimplePalette256))
-  encode palette singleSVGLine sourceFilePath
+  encode palette quadraticSVGMatrix sourceFilePath

@@ -34,6 +34,10 @@ $ nix-shell
 # ^ Running this inside nix-shell will allow work haskell extensions to work properly
 ```
 
+### Dataset
+
+Ref. https://corpus.canterbury.ac.nz/descriptions/#cantrbry
+
 ### Links about 8-bit palette
 
 - https://lospec.com/palette-list/windows-95-256-colours
@@ -63,6 +67,14 @@ $ nix-shell
 ```
 
 2. then, manually setup `serverExecutablePath` (at extension settings):
+
+Change default:
+
+```json
+"haskell.serverExecutablePath": "~/.config/Code/User/globalStorage/haskell.haskell/haskell-language-server-1.6.1.0-linux-8.8.4"
+```
+
+to:
 
 ```json
 "haskell.serverExecutablePath": "/nix/store/59r8wk61czv5dm3avi118dimrmh57rn1-haskell-language-server-1.1.0.0/bin/haskell-language-server-8.10"
