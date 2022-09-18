@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module ColorinColorado.Svg.QuadraticMatrixSvgCodec (main) where
+module ColorinColorado.Svg.QuadraticMatrixSvgCodec (main, mainRGB, mainRGBA) where
 
 import ColorinColorado.Svg.Codec (SvgGeneratorFn)
 import ColorinColorado.Svg.Common (mkRect, mkSvg)
@@ -8,6 +8,8 @@ import ColorinColorado.Types.Palette
   ( Palette,
     SimplePalette256,
     colorFileWith,
+    colorFileWith',
+    colorFileWith''
   )
 import ColorinColorado.Utils (getOrThrow)
 import Conduit (MonadUnliftIO)
@@ -70,3 +72,49 @@ main = do
   [palettePath, sourceFilePath] <- getArgs
   palette <- getOrThrow (eitherDecodeFileStrict' palettePath :: IO (Either String SimplePalette256))
   encode palette quadraticSVGMatrix sourceFilePath
+
+
+encodeRGB :: (MonadUnliftIO m) => SvgGeneratorFn -> FilePath -> m ()
+encodeRGB svgGeneratorFn sourceFilePath = do
+  mColors <- colorFileWith' sourceFilePath
+  case mColors of
+    Nothing -> liftIO $ putStrLn "Error while trying to encode"
+    Just allColors -> do
+      _ <- liftIO $ print allColors
+      let totalLength = List.length allColors
+          quadraticFactor :: Int
+          quadraticFactor = ceiling $ sqrt (fromIntegral totalLength :: Double)
+      _ <- liftIO $ print totalLength
+      _ <- liftIO $ print quadraticFactor
+      let encodedSvg = svgGeneratorFn allColors
+          writableSvg :: String
+          writableSvg = show encodedSvg
+      liftIO $ writeFile (sourceFilePath <> ".rgb.svg") writableSvg
+
+mainRGB :: IO ()
+mainRGB = do
+  [sourceFilePath] <- getArgs
+  encodeRGB quadraticSVGMatrix sourceFilePath
+
+
+encodeRGBA :: (MonadUnliftIO m) => SvgGeneratorFn -> FilePath -> m ()
+encodeRGBA svgGeneratorFn sourceFilePath = do
+  mColors <- colorFileWith'' sourceFilePath
+  case mColors of
+    Nothing -> liftIO $ putStrLn "Error while trying to encode"
+    Just allColors -> do
+      _ <- liftIO $ print allColors
+      let totalLength = List.length allColors
+          quadraticFactor :: Int
+          quadraticFactor = ceiling $ sqrt (fromIntegral totalLength :: Double)
+      _ <- liftIO $ print totalLength
+      _ <- liftIO $ print quadraticFactor
+      let encodedSvg = svgGeneratorFn allColors
+          writableSvg :: String
+          writableSvg = show encodedSvg
+      liftIO $ writeFile (sourceFilePath <> ".rgba.svg") writableSvg
+
+mainRGBA :: IO ()
+mainRGBA = do
+  [sourceFilePath] <- getArgs
+  encodeRGBA quadraticSVGMatrix sourceFilePath
