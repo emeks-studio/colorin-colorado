@@ -1,8 +1,9 @@
 cabal-version: 2.4
 name: colorin-colorado
-version: 2022.9.11.0
-synopsis: Binaries as 8-bit colored SVGs
+version: 2022.9.25.0
+synopsis: Binaries interpreted as color matrices or music notes
 build-type: Simple
+license-file: LICENSE
 extra-source-files:  
   README.md
 
