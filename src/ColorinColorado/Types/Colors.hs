@@ -43,6 +43,7 @@ parseHexColorFromText v = do
     then return $ HexColor v
     else Left "Invalid string"
 
+-- FIXME: Sometimes r g b has only 1 digit
 fromRGB :: (Word8, Word8, Word8) -> HexColor
 fromRGB (r, g, b) =
   let r' = Numeric.showHex r
@@ -64,6 +65,7 @@ parseHexColorFromRGB bs =
     defaultValue :: Word8
     defaultValue = fromIntegral (255 :: Integer) 
 
+-- FIXME: Sometimes r g b a has only 1 digit
 fromRGBA :: (Word8, Word8, Word8, Word8) -> HexColor   
 fromRGBA (r, g, b, a) =
   let r' = Numeric.showHex r
