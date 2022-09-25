@@ -1,6 +1,13 @@
 # colorin-colorado
 
-Binaries as 8-bit colored SVGs
+Binaries interpreted as color matrices or music notes (soon ?)
+
+So far:
+
+- Binary interpreted as a colored matrix
+
+  - file formats: .svg
+  - color palletes: "8-bit" (customizable), RGB and RGBA.
 
 ## Development
 
