@@ -7,7 +7,10 @@ import ColorinColorado.Svg.Common (mkRect, mkSvg)
 import ColorinColorado.Types.Palette
   ( Palette,
     SimplePalette256,
-    colorFileWith,
+  )
+import ColorinColorado.Types.Painter
+  ( coloringFile, 
+    AnyPalette (AnyPalette)
   )
 import ColorinColorado.Utils (getOrThrow)
 import Conduit (MonadUnliftIO)
@@ -38,7 +41,7 @@ singleSVGLine colors =
 -- TODO: Use a logger with different levels: DEBUG, ERROR, etc
 encode :: (MonadUnliftIO m, Palette p) => p -> SvgGeneratorFn -> FilePath -> m ()
 encode palette svgGeneratorFn sourceFilePath = do
-  mColors <- colorFileWith palette sourceFilePath
+  mColors <- coloringFile (AnyPalette palette) sourceFilePath
   case mColors of
     Nothing -> liftIO $ putStrLn "Error while trying to encode"
     Just allColors -> do

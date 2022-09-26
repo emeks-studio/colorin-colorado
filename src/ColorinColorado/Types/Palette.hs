@@ -9,13 +9,11 @@ module ColorinColorado.Types.Palette
     lookupByte,
     SimplePalette256, -- Specific implementation
     mkSimplePalette256, -- Smart constructor for SimplePalette256
-    colorFileWith,
-    colorFileWith',
-    colorFileWith''
+    colorBSWith,
   )
 where
 
-import ColorinColorado.Types.Colors (HexColor, parseHexColorFromRGB, parseHexColorFromRGBA)
+import ColorinColorado.Types.Colors (HexColor)
 import Data.Aeson
   ( FromJSON (parseJSON),
     ToJSON (toJSON),
@@ -33,18 +31,7 @@ import Data.List.Unique as List.Unique (allUnique)
 import Data.Word (Word8)
 import GHC.Generics (Generic)
 import qualified Data.Foldable (toList)
-import Conduit
-  ( mapC,
-    runConduitRes,
-    sinkList,
-    sourceFileBS,
-    (.|),
-    MonadUnliftIO, 
-  )
-import Data.Conduit.Combinators (chunksOfE)
 import Data.ByteString (ByteString, unpack)
-import Control.Monad (join)
-import Data.Either.Extra (eitherToMaybe)
 
 class Palette a where
   lookupHexColor :: a -> Word8 -> Maybe HexColor
@@ -96,34 +83,3 @@ colorBSWith palette bs = do
       x = (\byte -> lookupHexColor palette byte) <$> bytes
       mEncodedBytes = sequence x
   mEncodedBytes
-
-colorFileWith :: (MonadUnliftIO m, Palette p) => p -> FilePath -> m (Maybe [HexColor])
-colorFileWith palette sourceFilePath = do
-  let color = colorBSWith palette
-  chunks <-
-    runConduitRes $
-      sourceFileBS sourceFilePath .| mapC color .| sinkList
-  let mColoredChunks = sequence chunks
-  let mColoredFile = join <$> mColoredChunks
-  return mColoredFile
-
--- | TODO: Create something like: Painter
-colorFileWith' :: (MonadUnliftIO m) => FilePath -> m (Maybe [HexColor])
-colorFileWith' sourceFilePath = do
-  let color :: ByteString -> Maybe HexColor
-      color = eitherToMaybe . parseHexColorFromRGB
-  chunks <-
-    runConduitRes $
-      sourceFileBS sourceFilePath .| chunksOfE 3 .| mapC color .| sinkList
-  let mColoredFile = sequence chunks
-  return mColoredFile
-
-colorFileWith'' :: (MonadUnliftIO m) => FilePath -> m (Maybe [HexColor])
-colorFileWith'' sourceFilePath = do
-  let color :: ByteString -> Maybe HexColor
-      color = eitherToMaybe . parseHexColorFromRGBA
-  chunks <-
-    runConduitRes $
-      sourceFileBS sourceFilePath .| chunksOfE 4 .| mapC color .| sinkList
-  let mColoredFile = sequence chunks
-  return mColoredFile

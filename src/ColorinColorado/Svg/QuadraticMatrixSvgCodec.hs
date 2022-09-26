@@ -6,10 +6,13 @@ import ColorinColorado.Svg.Codec (SvgGeneratorFn)
 import ColorinColorado.Svg.Common (mkRect, mkSvg)
 import ColorinColorado.Types.Palette
   ( Palette,
-    SimplePalette256,
-    colorFileWith,
-    colorFileWith',
-    colorFileWith''
+    SimplePalette256
+  )
+import ColorinColorado.Types.Painter
+  ( coloringFile, 
+    AnyPalette (AnyPalette),
+    RGBPainter (RGBPainter),
+    RGBAPainter (RGBAPainter)
   )
 import ColorinColorado.Utils (getOrThrow)
 import Conduit (MonadUnliftIO)
@@ -49,10 +52,11 @@ updatePositions xPos yPos widthPerElement heightPerElement factor =
     (0, yPos + heightPerElement)
   where nextXPost = xPos + widthPerElement
 
+-- TODO: As with Painter, create a Codec typeclass; Try to make SvgGeneratorFns and Painters composable
 -- TODO: Use a logger with different levels: DEBUG, ERROR, etc
 encode :: (MonadUnliftIO m, Palette p) => p -> SvgGeneratorFn -> FilePath -> m ()
 encode palette svgGeneratorFn sourceFilePath = do
-  mColors <- colorFileWith palette sourceFilePath
+  mColors <- coloringFile (AnyPalette palette) sourceFilePath
   case mColors of
     Nothing -> liftIO $ putStrLn "Error while trying to encode"
     Just allColors -> do
@@ -73,10 +77,9 @@ main = do
   palette <- getOrThrow (eitherDecodeFileStrict' palettePath :: IO (Either String SimplePalette256))
   encode palette quadraticSVGMatrix sourceFilePath
 
-
 encodeRGB :: (MonadUnliftIO m) => SvgGeneratorFn -> FilePath -> m ()
 encodeRGB svgGeneratorFn sourceFilePath = do
-  mColors <- colorFileWith' sourceFilePath
+  mColors <- coloringFile RGBPainter sourceFilePath
   case mColors of
     Nothing -> liftIO $ putStrLn "Error while trying to encode"
     Just allColors -> do
@@ -96,10 +99,9 @@ mainRGB = do
   [sourceFilePath] <- getArgs
   encodeRGB quadraticSVGMatrix sourceFilePath
 
-
 encodeRGBA :: (MonadUnliftIO m) => SvgGeneratorFn -> FilePath -> m ()
 encodeRGBA svgGeneratorFn sourceFilePath = do
-  mColors <- colorFileWith'' sourceFilePath
+  mColors <- coloringFile RGBAPainter sourceFilePath
   case mColors of
     Nothing -> liftIO $ putStrLn "Error while trying to encode"
     Just allColors -> do
