@@ -7,7 +7,7 @@ So far:
 - Binary interpreted as a colored matrix
 
   - file formats: .svg
-  - color paletes: "8-bit" (customizable), RGB and RGBA.
+  - color palettes: "8-bit" (customizable), RGB and RGBA.
 
 ## Development
 
