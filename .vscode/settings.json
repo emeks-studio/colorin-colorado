@@ -1,0 +1,4 @@
+{
+    "haskell.manageHLS": "PATH",
+    "haskell.serverExecutablePath": "/nix/store/bisvs762axm445g563gigfr4wvw20560-haskell-language-server-exe-haskell-language-server-1.9.1.0/bin/haskell-language-server"
+}

@@ -1,3 +1,4 @@
 dist-newstyle
 example.svg
 dataset/
+.vscode/tasks.json
