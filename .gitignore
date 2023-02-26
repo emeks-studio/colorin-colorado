@@ -2,3 +2,4 @@ dist-newstyle
 example.svg
 dataset/
 .vscode/tasks.json
+.pre-commit-config.yaml

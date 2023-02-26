@@ -6,15 +6,15 @@
     # Nix should ask for permission before using it,
     # but remove it here if you do not want it to.
     extra-substituters = [
-      "https://cache.iog.io" 
+      "https://cache.iog.io"
       "https://pre-commit-hooks.cachix.org"
-      "https://emeks-public.cachix.org" 
-       # ^ Use https://docs.cachix.org/pushing#pushing-flake-inputs to update this!
-       # TODO: Push to the cache in order to save time!
+      "https://emeks-public.cachix.org"
+      # ^ Use https://docs.cachix.org/pushing#pushing-flake-inputs to update this!
+      # TODO: Push to the cache in order to save time!
     ];
     extra-trusted-public-keys = [
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" 
-      "pre-commit-hooks.cachix.org-1:Pkk3Panw5AW24TOv6kz3PvLhlH8puAsJTBbOPmBo7Rc=" 
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "pre-commit-hooks.cachix.org-1:Pkk3Panw5AW24TOv6kz3PvLhlH8puAsJTBbOPmBo7Rc="
       "emeks-public.cachix.org-1:sz2oZuYq7EsRb5FW6sDtpPU1CWh+6ymOgxFgmrYTKGI="
     ];
     allow-import-from-derivation = "true";
@@ -35,9 +35,17 @@
         # "aarch64-darwin"
       ];
     in
-      flake-utils.lib.eachSystem supportedSystems (system:
+    flake-utils.lib.eachSystem supportedSystems (system:
       let
-        overlays = [ haskellNix.overlay
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            nixpkgs-fmt.enable = true;
+            ormolu.enable = true;
+          };
+        };
+        overlays = [
+          haskellNix.overlay
           (final: prev: {
             hixProject =
               final.haskell-nix.hix.project {
@@ -45,39 +53,30 @@
                 evalSystem = system;
                 compiler-nix-name = "ghc925";
                 shell.tools = {
-                  cabal = {};
-                  hlint = {};
-                  ormolu = {};
+                  cabal = { };
+                  hlint = { };
+                  ormolu = { };
                   # https://haskell-language-server.readthedocs.io/en/latest/support/ghc-version-support.html
                   haskell-language-server = "1.9.1.0";
                 };
+                shell.shellHook = ''
+                  echo "Installing pre-commit hooks";
+                  ${pre-commit-check.shellHook}
+                '';
               };
           })
         ];
         pkgs = import nixpkgs { inherit system overlays; inherit (haskellNix) config; };
-        flake = pkgs.hixProject.flake {};
-      in flake // {
+        flake = pkgs.hixProject.flake { };
+      in
+      flake // {
         legacyPackages = pkgs;
 
         packages.default = flake.packages."colorin-colorado:exe:colorin-colorado";
 
         # Execute with "nix flake check"
-        # ^ FIXME: Properly install pre-commit after enter in "nix develop"
         checks = {
-          pre-commit-check = pre-commit-hooks.lib.${system}.run {
-            src = ./.;
-            hooks = {
-              nixpkgs-fmt.enable = true;
-              ormolu.enable = true;
-            };
+          inherit pre-commit-check;
         };
-
-        devShell = pkgs.mkShell {
-          shellHook = ''
-            echo "Installing pre-commit hooks";
-            ${self.checks.pre-commit-check.shellHook}
-          '';
-        };
-      };
-    });  
+      });
 }
