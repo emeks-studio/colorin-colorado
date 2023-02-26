@@ -60,7 +60,6 @@
                   haskell-language-server = "1.9.1.0";
                 };
                 shell.shellHook = ''
-                  echo "Installing pre-commit hooks";
                   ${pre-commit-check.shellHook}
                 '';
               };
