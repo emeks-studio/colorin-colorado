@@ -22,16 +22,16 @@ import Data.Aeson
 import qualified Data.Bimap as Bimap
   ( Bimap,
     fromList,
-    toList,
     lookup,
     lookupR,
+    toList,
   )
+import Data.ByteString (ByteString, unpack)
+import qualified Data.Foldable (toList)
 import Data.List as List (length)
 import Data.List.Unique as List.Unique (allUnique)
 import Data.Word (Word8)
 import GHC.Generics (Generic)
-import qualified Data.Foldable (toList)
-import Data.ByteString (ByteString, unpack)
 
 class Palette a where
   lookupHexColor :: a -> Word8 -> Maybe HexColor
@@ -80,6 +80,6 @@ instance FromJSON SimplePalette256 where
 colorBSWith :: Palette p => p -> ByteString -> Maybe [HexColor]
 colorBSWith palette bs = do
   let bytes = unpack bs
-      x = (\byte -> lookupHexColor palette byte) <$> bytes
+      x = lookupHexColor palette <$> bytes
       mEncodedBytes = sequence x
   mEncodedBytes
