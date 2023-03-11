@@ -1,16 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module ColorinColorado.Svg.QuadraticMatrixSvgEncoder (main) where
+module ColorinColorado.Svg.QuadraticMatrixSvgEncoder (QuadraticSvgMatrixGenerator (..), main) where
 
-import ColorinColorado.Svg.Encoder (SvgGenerator, genSvgFromColors, encodeFile)
 import ColorinColorado.Svg.Common (mkRect, mkSvg)
-import ColorinColorado.Types.Palette
-  ( SimplePalette256
-  )
+import ColorinColorado.Svg.Encoder (SvgGenerator, encodeFile, genSvgFromColors)
 import ColorinColorado.Types.Painter
   ( AnyPalette (AnyPalette),
+    RGBAPainter (RGBAPainter),
     RGBPainter (RGBPainter),
-    RGBAPainter (RGBAPainter)
+  )
+import ColorinColorado.Types.Palette
+  ( SimplePalette256,
   )
 import ColorinColorado.Utils (getOrThrow)
 import Control.Monad.IO.Class (liftIO)
@@ -45,11 +45,11 @@ instance (SvgGenerator QuadraticSvgMatrixGenerator) where
 
 updatePositions :: Int -> Int -> Int -> Int -> Int -> (Int, Int)
 updatePositions xPos yPos widthPerElement heightPerElement factor =
-  if nextXPost < factor then
-    (nextXPost, yPos)
-  else
-    (0, yPos + heightPerElement)
-  where nextXPost = xPos + widthPerElement
+  if nextXPost < factor
+    then (nextXPost, yPos)
+    else (0, yPos + heightPerElement)
+  where
+    nextXPost = xPos + widthPerElement
 
 -- TODO: Provide flags in order to decide which encoder use, etc, etc (in a different file)
 main :: IO ()
@@ -67,5 +67,6 @@ main = do
       let writableSvg :: String
           writableSvg = show svgElement
       liftIO $ writeFile (sourceFilePath <> ".palette.svg") writableSvg
-      --  liftIO $ writeFile (sourceFilePath <> ".rgb.svg") writableSvg
-      --  liftIO $ writeFile (sourceFilePath <> ".rgba.svg") writableSvg
+
+--  liftIO $ writeFile (sourceFilePath <> ".rgb.svg") writableSvg
+--  liftIO $ writeFile (sourceFilePath <> ".rgba.svg") writableSvg

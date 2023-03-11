@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module ColorinColorado.Svg.SingleLineSvgEncoder (main) where
+module ColorinColorado.Svg.SingleLineSvgEncoder (SingleLineSvgGenerator (SingleLineSvgGenerator), main) where
 
-import ColorinColorado.Svg.Encoder (SvgGenerator, genSvgFromColors, encodeFile)
 import ColorinColorado.Svg.Common (mkRect, mkSvg)
-import ColorinColorado.Types.Palette (SimplePalette256)
+import ColorinColorado.Svg.Encoder (SvgGenerator, encodeFile, genSvgFromColors)
 import ColorinColorado.Types.Painter
   ( AnyPalette (AnyPalette),
-    RGBPainter (RGBPainter),
     RGBAPainter (RGBAPainter),
+    RGBPainter (RGBPainter),
   )
+import ColorinColorado.Types.Palette (SimplePalette256)
 import ColorinColorado.Utils (getOrThrow)
 import Control.Monad.IO.Class (liftIO)
 import Data.Aeson (eitherDecodeFileStrict')
@@ -41,7 +41,7 @@ main :: IO ()
 main = do
   [palettePath, sourceFilePath] <- getArgs
   palette <- getOrThrow (eitherDecodeFileStrict' palettePath :: IO (Either String SimplePalette256))
-   -- TODO: Choose between encoders!
+  -- TODO: Choose between encoders!
   let singleLinePaletteSvgEncoder = (SingleLineSvgGenerator, AnyPalette palette)
   let _singleLineRGBSvgEncoder = (SingleLineSvgGenerator, RGBPainter)
   let _singleLineRGBASvgEncoder = (SingleLineSvgGenerator, RGBAPainter)
@@ -52,5 +52,6 @@ main = do
       let writableSvg :: String
           writableSvg = show svgElement
       liftIO $ writeFile (sourceFilePath <> ".palette.svg") writableSvg
-      --  liftIO $ writeFile (sourceFilePath <> ".rgb.svg") writableSvg
-      --  liftIO $ writeFile (sourceFilePath <> ".rgba.svg") writableSvg
+
+--  liftIO $ writeFile (sourceFilePath <> ".rgb.svg") writableSvg
+--  liftIO $ writeFile (sourceFilePath <> ".rgba.svg") writableSvg

@@ -1,6 +1,6 @@
 cabal-version: 2.4
 name: colorin-colorado
-version: 2022.10.1.0
+version: 2023.3.11.0
 synopsis: Binaries interpreted as color matrices or music notes
 build-type: Simple
 license-file: LICENSE
@@ -50,6 +50,7 @@ executable colorin-colorado
   main-is: Main.hs
   build-depends:
       colorin-colorado
+    , turtle
   hs-source-dirs: app
   ghc-options: -threaded -O2 -rtsopts
 
