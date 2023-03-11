@@ -45,7 +45,7 @@ library
     , ColorinColorado.Utils      
   hs-source-dirs: src
 
-executable colorin-colorado
+executable image-encoder
   import: deps
   main-is: Main.hs
   build-depends:

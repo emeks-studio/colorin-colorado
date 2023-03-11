@@ -69,7 +69,7 @@
       flake // {
         legacyPackages = pkgs;
 
-        packages.default = flake.packages."colorin-colorado:exe:colorin-colorado";
+        packages.default = flake.packages."colorin-colorado:exe:image-encoder";
 
         # Execute with "nix flake check"
         checks = {
