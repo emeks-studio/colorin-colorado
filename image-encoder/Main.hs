@@ -37,10 +37,10 @@ main :: IO ()
 main = do
   encoderParams <- options "image-encoder allows you to encode any file into different types of images" encoderParamsParser
   case (format encoderParams, palleteFile encoderParams) of
-    ("pallete", Just palleteFile') -> do
+    ("palette", Just palleteFile') -> do
       palette <- getOrThrow (eitherDecodeFileStrict' palleteFile' :: IO (Either String SimplePalette256))
       handleEncoding (AnyPalette palette) ".palette" encoderParams
-    ("pallete", Nothing) -> putStrLn "format option palette expects a PALETTE_FILE"
+    ("palette", Nothing) -> putStrLn "format option palette expects a PALETTE_FILE"
     ("rgb", Just _) -> putStrLn "format option rgb does not support a custom palette"
     ("rgb", Nothing) -> handleEncoding RGBPainter ".rgb" encoderParams
     ("rgba", Just _) -> putStrLn "format option rgba does not support a custom palette"

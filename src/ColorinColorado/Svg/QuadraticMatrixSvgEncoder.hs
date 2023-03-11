@@ -1,22 +1,8 @@
-{-# LANGUAGE OverloadedStrings #-}
-
-module ColorinColorado.Svg.QuadraticMatrixSvgEncoder (QuadraticSvgMatrixGenerator (..), main) where
+module ColorinColorado.Svg.QuadraticMatrixSvgEncoder (QuadraticSvgMatrixGenerator (..)) where
 
 import ColorinColorado.Svg.Common (mkRect, mkSvg)
-import ColorinColorado.Svg.Encoder (SvgGenerator, encodeFile, genSvgFromColors)
-import ColorinColorado.Types.Painter
-  ( AnyPalette (AnyPalette),
-    RGBAPainter (RGBAPainter),
-    RGBPainter (RGBPainter),
-  )
-import ColorinColorado.Types.Palette
-  ( SimplePalette256,
-  )
-import ColorinColorado.Utils (getOrThrow)
-import Control.Monad.IO.Class (liftIO)
-import Data.Aeson (eitherDecodeFileStrict')
+import ColorinColorado.Svg.Encoder (SvgGenerator, genSvgFromColors)
 import qualified Data.List as List (foldl', length)
-import System.Environment (getArgs)
 
 data QuadraticSvgMatrixGenerator = QuadraticSvgMatrixGenerator
 
@@ -50,23 +36,3 @@ updatePositions xPos yPos widthPerElement heightPerElement factor =
     else (0, yPos + heightPerElement)
   where
     nextXPost = xPos + widthPerElement
-
--- TODO: Provide flags in order to decide which encoder use, etc, etc (in a different file)
-main :: IO ()
-main = do
-  [palettePath, sourceFilePath] <- getArgs
-  palette <- getOrThrow (eitherDecodeFileStrict' palettePath :: IO (Either String SimplePalette256))
-  -- TODO: Choose between encoders!
-  let quadraticMatrixPaletteSvgEncoder = (QuadraticSvgMatrixGenerator, AnyPalette palette)
-  let _quadraticMatrixRGBSvgEncoder = (QuadraticSvgMatrixGenerator, RGBPainter)
-  let _quadraticMatrixRGBASvgEncoder = (QuadraticSvgMatrixGenerator, RGBAPainter)
-  mSvgElement <- encodeFile quadraticMatrixPaletteSvgEncoder sourceFilePath
-  case mSvgElement of
-    Nothing -> liftIO $ putStrLn "Error while trying to encode"
-    Just svgElement -> do
-      let writableSvg :: String
-          writableSvg = show svgElement
-      liftIO $ writeFile (sourceFilePath <> ".palette.svg") writableSvg
-
---  liftIO $ writeFile (sourceFilePath <> ".rgb.svg") writableSvg
---  liftIO $ writeFile (sourceFilePath <> ".rgba.svg") writableSvg

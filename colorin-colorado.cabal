@@ -51,7 +51,7 @@ executable image-encoder
   build-depends:
       colorin-colorado
     , turtle
-  hs-source-dirs: app
+  hs-source-dirs: image-encoder
   ghc-options: -threaded -O2 -rtsopts
 
 executable gen-shuffle-palette
