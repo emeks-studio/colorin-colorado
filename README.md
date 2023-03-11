@@ -22,6 +22,15 @@ $ nix-shell
 [nix-shell:~]$ cabal v2-run
 ```
 
+### Update cachix
+
+```
+colorin-colorado git:(master) nix develop --profile colorin-colorado-dev-profile
+(nix) colorin-colorado ~/repositories/colorin-colorado λ export CACHIX_AUTH_TOKEN=$AUTH_TOKEN; cachix push emeks-public colorin-colorado-dev-profile 
+```
+
+^ Ref. https://docs.cachix.org/pushing#pushing-flake-inputs
+
 ## Appendix
 
 ### Starting project from scratch

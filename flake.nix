@@ -9,8 +9,6 @@
       "https://cache.iog.io"
       "https://pre-commit-hooks.cachix.org"
       "https://emeks-public.cachix.org"
-      # ^ Use https://docs.cachix.org/pushing#pushing-flake-inputs to update this!
-      # TODO: Push to the cache in order to save time!
     ];
     extra-trusted-public-keys = [
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
