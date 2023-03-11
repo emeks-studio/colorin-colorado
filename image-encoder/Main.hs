@@ -27,8 +27,8 @@ data EncoderParams = EncoderParams
 encoderParamsParser :: Parser EncoderParams
 encoderParamsParser =
   EncoderParams
-    <$> optText "shape" 's' "Image shape. ptions: matrix | line"
-    <*> optText "format" 'f' "Image format. options: rgb | rgba | palette PALETTE_FILE"
+    <$> optText "shape" 's' "Image shape. Options: matrix | line"
+    <*> optText "format" 'f' "Image format. Options: rgb | rgba | palette PALETTE_FILE"
     <*> argPath "src" "The source file path to encode"
     <*> optional (argPath "PALETTE_FILE" "If you choose format palette you must pass a palette spec file (expected format .json)")
 
