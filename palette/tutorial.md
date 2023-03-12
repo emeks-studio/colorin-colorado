@@ -8,7 +8,7 @@ each ASCII code will be replaced by the given color.
 
 This palette is based on "windows95-ordered.json" palette but with a few modifications:
 
-- greyscale for control characters (0-31 + 127)
+- grayscale for control characters (0-31 + 127)
 - white for "space"
 - black for "nbsp"
 - "highlighted" colors for numbers (see palette/examples/encode-example.palette.line.svg)
