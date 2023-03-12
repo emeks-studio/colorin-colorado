@@ -33,12 +33,6 @@ colorin-colorado git:(master) nix develop --profile colorin-colorado-dev-profile
 
 ## Appendix
 
-### Starting project from scratch
-
-Add default.nix + .cabal file, then run nix-shell
-
-Ref. https://srid.ca/haskell-nix 
-
 ### Better DevEx
 
 Install vscode + Haskell extension (Haskell languague support) + ormolu (Haskell linter)
@@ -53,10 +47,6 @@ $ nix-shell
 ### Dataset
 
 Ref. https://corpus.canterbury.ac.nz/descriptions/#cantrbry
-
-### Links about 8-bit palette
-
-- https://lospec.com/palette-list/windows-95-256-colours
 
 ## Troubleshooting
 

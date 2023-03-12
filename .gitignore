@@ -4,3 +4,4 @@ dataset/
 .vscode/tasks.json
 .pre-commit-config.yaml
 result/
+palette/handmade-draft.json
