@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -10,7 +9,7 @@ module ColorinColorado.Types.Colors
     parseHexColorFromRGB,
     parseHexColorFromRGBA,
     fromRGB,
-    fromRGBA
+    fromRGBA,
   )
 where
 
@@ -19,16 +18,16 @@ import Data.Aeson
     ToJSON (toJSON),
     Value (String),
   )
+import qualified Data.ByteString as BS (ByteString, unpack)
 import Data.Text (Text)
-import GHC.Generics (Generic)
-import Text.Regex.TDFA ((=~))
-import qualified Numeric (showHex)
 import qualified Data.Text as Text (pack, unpack)
 import Data.Word (Word8)
-import qualified Data.ByteString as BS (ByteString, unpack)
+import GHC.Generics (Generic)
+import qualified Numeric (showHex)
+import Text.Regex.TDFA ((=~))
 
 hexColorRegexValidation :: String
-hexColorRegexValidation = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+hexColorRegexValidation = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"
 
 newtype HexColor = HexColor Text
   deriving stock (Generic, Eq, Ord)
@@ -43,52 +42,51 @@ parseHexColorFromText v = do
     then return $ HexColor v
     else Left "Invalid string"
 
--- FIXME: Sometimes r g b has only 1 digit
 fromRGB :: (Word8, Word8, Word8) -> HexColor
 fromRGB (r, g, b) =
-  let r' = Numeric.showHex r
-      g' = Numeric.showHex g
-      b' = Numeric.showHex b
-      hex = r' . g' . b' $ ""
-      hexColor = "#" <> hex
-  in HexColor $ Text.pack hexColor 
+  -- Prepend 0 if Numeric.showHex returns only 1 digit,
+  -- then take 2 digits (in case there were already 2 digits)
+  let r' = take 2 $ Numeric.showHex r "0"
+      g' = take 2 $ Numeric.showHex g "0"
+      b' = take 2 $ Numeric.showHex b "0"
+      hexColor = "#" <> r' <> g' <> b'
+   in HexColor $ Text.pack hexColor
 
 parseHexColorFromRGB :: BS.ByteString -> Either String HexColor
 parseHexColorFromRGB bs =
- case BS.unpack bs of
-   [r, g, b] -> Right $ fromRGB (r, g, b)
-   [r, g] ->  Right $ fromRGB (r, g, defaultValue)
-   [r] ->  Right $ fromRGB (r, defaultValue , defaultValue)
-   [] -> Left "Empty Bytestring"
-   _ -> Left "Bytestring too large"
-  where 
+  case BS.unpack bs of
+    [r, g, b] -> Right $ fromRGB (r, g, b)
+    [r, g] -> Right $ fromRGB (r, g, defaultValue)
+    [r] -> Right $ fromRGB (r, defaultValue, defaultValue)
+    [] -> Left "Empty Bytestring"
+    _ -> Left "Bytestring too large"
+  where
     defaultValue :: Word8
-    defaultValue = fromIntegral (255 :: Integer) 
+    defaultValue = fromIntegral (255 :: Integer)
 
--- FIXME: Sometimes r g b a has only 1 digit
-fromRGBA :: (Word8, Word8, Word8, Word8) -> HexColor   
+fromRGBA :: (Word8, Word8, Word8, Word8) -> HexColor
 fromRGBA (r, g, b, a) =
-  let r' = Numeric.showHex r
-      g' = Numeric.showHex g
-      b' = Numeric.showHex b
-      a' = Numeric.showHex a
-      hex = r' . g' . b' . a' $ ""
-      hexColor = "#" <> hex
-  in HexColor (Text.pack hexColor)
+  -- Prepend 0 if Numeric.showHex returns only 1 digit,
+  -- then take 2 digits (in case there were already 2 digits)
+  let r' = take 2 $ Numeric.showHex r "0"
+      g' = take 2 $ Numeric.showHex g "0"
+      b' = take 2 $ Numeric.showHex b "0"
+      a' = take 2 $ Numeric.showHex a "0"
+      hexColor = "#" <> r' <> g' <> b' <> a'
+   in HexColor (Text.pack hexColor)
 
 parseHexColorFromRGBA :: BS.ByteString -> Either String HexColor
 parseHexColorFromRGBA bs =
- case BS.unpack bs of
-   [r, g, b, a] -> Right $ fromRGBA (r, g, b, a)
---   _ -> Left "Bytestring with invalid length"
-   [r, g, b] -> Right $ fromRGBA (r, g, b, defaultValue)
-   [r, g] ->  Right $ fromRGBA (r, g, defaultValue, defaultValue)
-   [r] ->  Right $ fromRGBA (r, defaultValue, defaultValue , defaultValue)
-   [] -> Left "Empty Bytestring"
-   _ -> Left "Bytestring too large"
-  where 
+  case BS.unpack bs of
+    [r, g, b, a] -> Right $ fromRGBA (r, g, b, a)
+    [r, g, b] -> Right $ fromRGBA (r, g, b, defaultValue)
+    [r, g] -> Right $ fromRGBA (r, g, defaultValue, defaultValue)
+    [r] -> Right $ fromRGBA (r, defaultValue, defaultValue, defaultValue)
+    [] -> Left "Empty Bytestring"
+    _ -> Left "Bytestring too large"
+  where
     defaultValue :: Word8
-    defaultValue = fromIntegral (255 :: Integer) 
+    defaultValue = fromIntegral (255 :: Integer)
 
 -- (!): Display color with extra quotes!
 instance Show HexColor where
