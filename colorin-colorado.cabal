@@ -41,8 +41,9 @@ library
     , ColorinColorado.Svg.Common 
     , ColorinColorado.Svg.SingleLineSvgEncoder
     , ColorinColorado.Svg.QuadraticMatrixSvgEncoder
-    , ColorinColorado.Svg.SvgExample 
-    , ColorinColorado.Utils      
+    , ColorinColorado.Utils    
+  other-modules:  
+      ColorinColorado.Svg.SvgExample 
   hs-source-dirs: src
 
 test-suite spec
