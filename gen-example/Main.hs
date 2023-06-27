@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-missing-import-lists #-}
+{-# OPTIONS_GHC -Wno-unused-local-binds #-}
 
 -- | More docs at https://github.com/diagrams/svg-builder
 module Main where
@@ -22,27 +23,24 @@ zero = 0
 one :: Float
 one = 1
 
-initialRadius :: Float
-initialRadius = 10
+-- TODO: Calculate center according to file size
+centerX :: Float
+centerX = 150
 
--- https://danceswithcode.net/engineeringnotes/rotations_in_2d/rotations_in_2d.html + copilot
+centerY :: Float
+centerY = 150
 
--- | Con lo que esta tenemos la pizza, ahora queda:
---  hacer la doble elipse!
---  ~~las otras slides (rotar 30) + loop incremental, ~~ half of the work!
---  calcular centro segun tamanio archivo
-
--- 12
---
+radius :: Float
+radius = 10
 
 degreesIterator :: Float
 degreesIterator = pi / 6 -- 30. degrees
 
-cicle :: Float
-cicle = 2 * pi -- 360. degrees
+-- TODO: Use to iterate more than 1 ring
+ringLevel :: Float
+ringLevel = 1
 
--- [0, 30degreesIterator .. 2pi]
-
+-- | FIXME: For the bottom half of the circle, we need to swap things! (for now is a rainbow)
 regions :: M.Map Int T.Text
 regions =
   M.fromList
@@ -51,33 +49,61 @@ regions =
       (2, "yellow"),
       (3, "cyan"),
       (4, "purple"),
-      (5, "indigo"),
-      (6, "violet"),
-      (7, "magenta"),
-      (8, "orange"),
-      (9, "brown"),
-      (10, "green"),
-      (11, "grey")
+      (5, "indigo") --, -- til here goes ok
+      -- (6, "violet")
+      -- (7, "magenta"),
+      -- (8, "orange"),
+      -- (9, "brown"),
+      -- (10, "green"),
+      -- (11, "grey")
     ]
 
-slice :: Float -> Float -> Element
-slice start iterator =
-  path_
-    [ D_ <<- mA (150 :: Float) 150 -- center
-        <> lA (150 + initialRadius * cos start' :: Float) (150 - initialRadius * sin start')
-        <> aA initialRadius initialRadius zero (0 :: Int) (0 :: Int) (150 + initialRadius * cos ((iterator * degreesIterator)) :: Float) (150 - initialRadius * sin ((iterator * degreesIterator)))
-        <> z,
-      Stroke_ <<- "white",
-      Fill_ <<- regions ! (round start)
-    ]
+-- | 360 degress/ 30 degrees = 12 regions
+angleByRegion :: Int -> Float
+angleByRegion 0 = pi / 6
+angleByRegion 1 = pi / 3
+angleByRegion 2 = pi / 2
+angleByRegion 3 = 2 * pi / 3
+angleByRegion 4 = 5 * pi / 6
+angleByRegion 5 = pi
+angleByRegion 6 = 7 * pi / 6
+angleByRegion 7 = 4 * pi / 3
+angleByRegion 8 = 3 * pi / 2
+angleByRegion 9 = 5 * pi / 3
+angleByRegion 10 = 11 * pi / 6
+angleByRegion 11 = 2 * pi
+angleByRegion _ = 0
+
+-- we should iterate over degress!
+slice :: Int -> Element
+slice iterator =
+  ( path_
+      [ D_ <<- mA p1x p2y -- center
+          <> lA p2x p2y
+          <> aA rA1 rA1 zero (0 :: Int) (0 :: Int) p3x p3y
+          <> lA p4x p4y
+          <> aA rA2 rA2 zero (0 :: Int) (1 :: Int) p1x p1y,
+        Stroke_ <<- "white",
+        Fill_ <<- regions ! (iterator)
+      ]
+  )
   where
-    start' = start * degreesIterator
+    p1x = 150 + ringLevel * radius * cos ((ringLevel - 1) * (angleByRegion iterator))
+    p1y = 150 + ringLevel * radius * sin ((ringLevel - 1) * (angleByRegion iterator))
+    p2x = 150 + (1 + ringLevel) * radius * cos ((ringLevel - 1) * (angleByRegion iterator))
+    p2y = 150 + (1 + ringLevel) * radius * sin ((ringLevel - 1) * (angleByRegion iterator))
+    rA1 = (1 + ringLevel) * radius
+    p3x = 150 + (1 + ringLevel) * radius * cos (ringLevel * (angleByRegion iterator))
+    p3y = 150 - (1 + ringLevel) * radius * sin (ringLevel * (angleByRegion iterator))
+    p4x = 150 + ringLevel * radius * cos (ringLevel * (angleByRegion iterator))
+    p4y = 150 - ringLevel * radius * sin (ringLevel * (angleByRegion iterator))
+    rA2 = ringLevel * radius
 
 baseShape :: Element
-baseShape = circle_ [Cx_ <<- "150", Cy_ <<- "150", R_ <<- (T.pack $ show initialRadius), Stroke_ <<- "black", Fill_ <<- "black"]
+baseShape = circle_ [Cx_ <<- "150", Cy_ <<- "150", R_ <<- (T.pack $ show radius), Stroke_ <<- "black", Fill_ <<- "black"]
 
 contents :: Element
-contents = F.foldr (\iterator accShape -> accShape <> slice iterator (iterator + 1)) baseShape [0, 1 .. (fromIntegral $ M.size regions - 1)]
+contents = F.foldr (\iterator accShape -> accShape <> slice iterator) baseShape [0 .. (fromIntegral $ M.size regions - 1)]
 
 -- -- | Arc (absolute)
 --aA :: RealFloat a =>  a -> a -> a -> a -> a -> a -> a -> Text
@@ -88,10 +114,6 @@ contents = F.foldr (\iterator accShape -> accShape <> slice iterator (iterator +
 -- | Arc (relative)
 -- aR :: RealFloat a =>  a -> a -> a -> a -> a -> a -> a -> Text
 -- aR rx ry xrot largeFlag sweepFlag x y =
-
---     rect_   [ Width_ <<- "50", Height_ <<- "50", "#000080" ->> Fill_]
---  <> rect_   [ X_ <<- "50", Width_ <<- "50", Height_ <<- "50", "#800000" ->> Fill_]
---  <> rect_   [ X_ <<- "100", Width_ <<- "50", Height_ <<- "50", "#808000" ->> Fill_]
 
 -- | Example: cabal v2-run gen-example -- example.svg
 main :: IO ()
