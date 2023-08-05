@@ -33,10 +33,10 @@ centerY = 150
 radius :: Float
 radius = 10
 
-degreesIterator :: Float
-degreesIterator = pi / 6 -- 30. degrees
+--degreesIterator :: Float
+--degreesIterator = pi / 6 -- 30. degrees
 
--- TODO: Use to iterate more than 1 ring
+-- TODO: Use to iterate more than 1 ring (you can start from 0)
 ringLevel :: Float
 ringLevel = 1
 
@@ -49,13 +49,13 @@ regions =
       (2, "yellow"),
       (3, "cyan"),
       (4, "purple"),
-      (5, "indigo") --, -- til here goes ok
-      -- (6, "violet")
-      -- (7, "magenta"),
-      -- (8, "orange"),
-      -- (9, "brown"),
-      -- (10, "green"),
-      -- (11, "grey")
+      (5, "indigo"), -- til here goes ok
+      (6, "violet"),
+      (7, "magenta"),
+      (8, "orange"),
+      (9, "brown"),
+      (10, "green"),
+      (11, "grey")
     ]
 
 -- | 360 degress/ 30 degrees = 12 regions
@@ -71,8 +71,23 @@ angleByRegion 7 = 4 * pi / 3
 angleByRegion 8 = 3 * pi / 2
 angleByRegion 9 = 5 * pi / 3
 angleByRegion 10 = 11 * pi / 6
-angleByRegion 11 = 2 * pi
+angleByRegion 11 = pi / 6
 angleByRegion _ = 0
+
+arcByRegion :: Int -> Int
+arcByRegion n
+  | n <= 5 = 0
+  | otherwise = 1
+
+sweepSmall :: Int -> Int
+sweepSmall n
+  | n == 11 = 1
+  | otherwise = 0
+
+sweepLarge :: Int -> Int
+sweepLarge n
+  | n == 11 = 0
+  | otherwise = 1
 
 -- we should iterate over degress!
 slice :: Int -> Element
@@ -80,23 +95,23 @@ slice iterator =
   ( path_
       [ D_ <<- mA p1x p2y -- center
           <> lA p2x p2y
-          <> aA rA1 rA1 zero (0 :: Int) (0 :: Int) p3x p3y
+          <> aA rA1 rA1 zero (arcByRegion iterator) (sweepSmall iterator) p3x p3y
           <> lA p4x p4y
-          <> aA rA2 rA2 zero (0 :: Int) (1 :: Int) p1x p1y,
+          <> aA rA2 rA2 zero (arcByRegion iterator) (sweepLarge iterator) p1x p1y,
         Stroke_ <<- "white",
         Fill_ <<- regions ! (iterator)
       ]
   )
   where
-    p1x = 150 + ringLevel * radius * cos ((ringLevel - 1) * (angleByRegion iterator))
-    p1y = 150 + ringLevel * radius * sin ((ringLevel - 1) * (angleByRegion iterator))
-    p2x = 150 + (1 + ringLevel) * radius * cos ((ringLevel - 1) * (angleByRegion iterator))
-    p2y = 150 + (1 + ringLevel) * radius * sin ((ringLevel - 1) * (angleByRegion iterator))
+    p1x = 150 + ringLevel * radius
+    p1y = 150
+    p2x = 150 + (1 + ringLevel) * radius
+    p2y = 150
     rA1 = (1 + ringLevel) * radius
-    p3x = 150 + (1 + ringLevel) * radius * cos (ringLevel * (angleByRegion iterator))
-    p3y = 150 - (1 + ringLevel) * radius * sin (ringLevel * (angleByRegion iterator))
-    p4x = 150 + ringLevel * radius * cos (ringLevel * (angleByRegion iterator))
-    p4y = 150 - ringLevel * radius * sin (ringLevel * (angleByRegion iterator))
+    p3x = 150 + (1 + ringLevel) * radius * cos (angleByRegion iterator)
+    p3y = 150 - (1 + ringLevel) * radius * sin (angleByRegion iterator)
+    p4x = 150 + ringLevel * radius * cos (angleByRegion iterator)
+    p4y = 150 - ringLevel * radius * sin (angleByRegion iterator)
     rA2 = ringLevel * radius
 
 baseShape :: Element
