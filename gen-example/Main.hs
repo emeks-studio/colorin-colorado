@@ -58,7 +58,6 @@ zero = 0
 one :: Float
 one = 1
 
--- TODO: Calculate center according to file size
 centerX :: Float
 centerX = 150
 
@@ -68,10 +67,10 @@ centerY = 150
 radius :: Float
 radius = 10
 
--- TODO: Use to iterate more than 1 ring (you can start from 0)
 ringLevel :: Float
-ringLevel = 1
+ringLevel = 2
 
+-- | TODO: Create this palette!
 regions :: M.Map Int T.Text
 regions =
   M.fromList
