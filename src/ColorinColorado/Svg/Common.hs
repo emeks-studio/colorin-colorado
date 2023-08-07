@@ -11,8 +11,6 @@ where
 
 import qualified ColorinColorado.Types.Colors as Colors (HexColor, toText)
 import ColorinColorado.Utils (toText)
-import Data.Map.Strict ((!))
-import qualified Data.Map.Strict as M
 import qualified Data.Text as T
 import Graphics.Svg
   ( AttrTag (Cx_, Cy_, D_, Fill_, Height_, R_, Stroke_, Version_, Width_, X_, Y_),
@@ -41,24 +39,6 @@ mkRect xPosition yPosition width height color =
       Colors.toText color ->> Fill_
     ]
 
-regions :: M.Map Int T.Text
-regions =
-  M.fromList
-    [ (0, "red"),
-      (1, "blue"),
-      (2, "yellow"),
-      (3, "cyan"),
-      (4, "purple"),
-      (5, "indigo"),
-      (6, "violet"),
-      (7, "magenta"),
-      (8, "orange"),
-      (9, "brown"),
-      (10, "green"),
-      (11, "grey")
-    ]
-
--- | FIXME: Use color passed!
 mkSlice ::
   -- | center
   (Float, Float) ->
@@ -71,7 +51,7 @@ mkSlice ::
   -- | color
   Colors.HexColor ->
   Element
-mkSlice (centerX, centerY) iterator radius ringLevel _color =
+mkSlice (centerX, centerY) iterator radius ringLevel color =
   path_
     [ D_ <<- mA p1x p1y -- initial point
         <> lA p2x p2y
@@ -79,7 +59,7 @@ mkSlice (centerX, centerY) iterator radius ringLevel _color =
         <> lA p4x p4y
         <> aA rA2 rA2 xAxisRotation (largeArcFlagByRegion iterator) (innerSweepFlagByRegion iterator) p1x p1y,
       Stroke_ <<- "white",
-      Fill_ <<- regions ! iterator
+      Fill_ <<- Colors.toText color
     ]
   where
     p1x = centerX + ringLevel * radius

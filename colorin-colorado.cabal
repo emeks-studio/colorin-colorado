@@ -22,7 +22,6 @@ common deps
     , bimap
     , bytestring
     , conduit
-    , containers
     , directory
     , extra
     , svg-builder
