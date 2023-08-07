@@ -2,6 +2,7 @@
 
 module Main where
 
+import ColorinColorado.Svg.ElipticalSvgEncoder (ElipticalSvgEncoder (ElipticalSvgEncoder))
 import ColorinColorado.Svg.Encoder (Encoder, encodeFile)
 import ColorinColorado.Svg.QuadraticMatrixSvgEncoder (QuadraticSvgMatrixGenerator (QuadraticSvgMatrixGenerator))
 import ColorinColorado.Svg.SingleLineSvgEncoder (SingleLineSvgGenerator (SingleLineSvgGenerator))
@@ -27,7 +28,7 @@ data EncoderParams = EncoderParams
 encoderParamsParser :: Parser EncoderParams
 encoderParamsParser =
   EncoderParams
-    <$> optText "shape" 's' "Image shape. Options: matrix | line"
+    <$> optText "shape" 's' "Image shape. Options: matrix | line | eliptical"
     <*> optText "format" 'f' "Image format. Options: rgb | rgba | palette PALETTE_FILE"
     <*> argPath "src" "The source file path to encode"
     <*> optional (argPath "PALETTE_FILE" "If you choose format palette you must pass a palette spec file (expected format .json)")
@@ -55,6 +56,9 @@ handleEncoding painter encodingSuffix params = case shape params of
   "line" -> encode singleLineSvgEncoder (encodingSuffix <> ".line") (src params)
     where
       singleLineSvgEncoder = (SingleLineSvgGenerator, painter)
+  "eliptical" -> encode elipticalSvgEncoder (encodingSuffix <> ".eliptical") (src params)
+    where
+      elipticalSvgEncoder = (ElipticalSvgEncoder, painter)
   _ -> putStrLn "invalid shape option"
 
 encode :: Encoder a => a -> String -> FilePath -> IO ()

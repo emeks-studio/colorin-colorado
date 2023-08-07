@@ -1,6 +1,6 @@
 cabal-version: 2.4
 name: colorin-colorado
-version: 2023.5.13.0
+version: 2023.8.6.0
 synopsis: Binaries interpreted as color matrices or music notes
 build-type: Simple
 license-file: LICENSE
@@ -39,11 +39,10 @@ library
     , ColorinColorado.Types.Painter
     , ColorinColorado.Svg.Encoder
     , ColorinColorado.Svg.Common 
+    , ColorinColorado.Svg.ElipticalSvgEncoder
     , ColorinColorado.Svg.SingleLineSvgEncoder
     , ColorinColorado.Svg.QuadraticMatrixSvgEncoder
-    , ColorinColorado.Utils    
-  other-modules:  
-      ColorinColorado.Svg.SvgExample 
+    , ColorinColorado.Utils
   hs-source-dirs: src
 
 test-suite spec
@@ -81,4 +80,13 @@ executable gen-shuffle-palette
     , random
     , random-shuffle
   hs-source-dirs: gen-shuffle-palette
+  ghc-options: -threaded -O2 -rtsopts
+
+executable gen-example
+  import: deps
+  main-is: Main.hs
+  build-depends:
+      containers
+    , colorin-colorado
+  hs-source-dirs: gen-example
   ghc-options: -threaded -O2 -rtsopts

@@ -1,0 +1,13 @@
+
+index-state: 2023-02-26T00:00:00Z
+
+packages:
+  ./.
+
+-- Fix Arc largeFlag sweepFlag flags
+source-repository-package
+  type: git
+  location: https://github.com/jxv/svg-builder.git
+  tag: 80a89b43577028fae9e07f431504b1a2c5377583
+  --sha256: sha256-t17nlQEjXrhxlTARInv7Zy91GpQz39VR7Ngm1djMV+4=
+  
