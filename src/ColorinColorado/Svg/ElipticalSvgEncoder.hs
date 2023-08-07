@@ -15,7 +15,7 @@ calculateNumberOfRings l =
   l `div` slicesPerRing + if l `rem` slicesPerRing > 0 then 1 else 0
 
 groupByWithIndex :: Int -> [a] -> [(Int, [a])]
-groupByWithIndex chunkOf = go chunkOf 1 -- use 1 if ring level starts in 1
+groupByWithIndex chunkOf = go chunkOf 0 -- use 1 if ring level starts in 1
   where
     go _ index [] = [(index, [])]
     go n index l
@@ -28,8 +28,8 @@ instance (SvgGenerator ElipticalSvgEncoder) where
         numberOfRings = calculateNumberOfRings totalLength
         minRadius :: Int
         minRadius = 5
-        totalRadius = minRadius * numberOfRings + minRadius -- if ring level in 1
-        -- totalRadius = minRadius * numberOfRings
+        --totalRadius = minRadius * numberOfRings + minRadius -- if ring level in 1
+        totalRadius = minRadius * numberOfRings
         totalDiameter = 2 * totalRadius
         totalWidth = totalDiameter
         totalHeight = totalDiameter
