@@ -99,11 +99,11 @@ I hope you enjoyed this little experiment as much as I did (thanks for reading i
 
 Happy coding! ~ mk from [emeks](https://www.emeks.com.ar/en/index.html).
 
-### Usefull links
+### Useful links
 
 - [Examples used in the study case (with their whole resolution)](./examples)
 - [El Patrón de los Números Primos](https://www.jasondavies.com/primos/)
-- [the canterbury corpus](https://corpus.canterbury.ac.nz/descriptions/#cantrbry)
+- [The Canterbury Corpus](https://corpus.canterbury.ac.nz/descriptions/#cantrbry)
 
 ## Development
 
