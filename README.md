@@ -77,7 +77,7 @@ Ok, by applying the same logic we will have: `13579...995997999`.
 
 <img src="examples/odd_1000.txt.palette.eliptical.svg"  width="1000" height="1000">
 
-Indeed, another pattern (that was expectable)... Now, for our final act, what about prime numbers? Those mithycal numbers that no one could find their series (yet!), those numbers that seems to hide the secrets of how we conceive our universe...hehe, ok enough drama...should we expect a pattern for them? I guess the answer is yes, despite I'm not sure if that can provide insight for current misteries around them, let's see how it goes when we try to encode the first 1000 prime numbers (`235711...790179077919`).
+Indeed, another pattern (that was expectable)... Now, for our final act, what about prime numbers? Those mythical numbers that no one could find their series (yet!), those numbers that seems to hide the secrets of how we conceive our universe...hehe, ok enough drama...should we expect a pattern for them? I guess the answer is yes, despite I'm not sure if that can provide insight for current misteries around them, let's see how it goes when we try to encode the first 1000 prime numbers (`235711...790179077919`).
 
 ```nix
 λ cabal run image-encoder -- -s eliptical -f palette ./examples/primes_1000.txt ./palette/handmade.json
