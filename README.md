@@ -97,7 +97,7 @@ To summarize, other stuff can be noticed too, but I prefer the reader makes thei
 Anyway, my wish is that some mathematician reach this and provide me more insight about it! But in any case, I think that this is a nice example of how seeing things from a different perspective can help you or motivate new ideas.
 I hope you enjoyed this little experiment as much as I did (thanks for reading it!), and please feel free to collaborate with the project, play with it, and share your results! Also if you have questions, find an issue or do you want to make a request, just create an issue (or PR) in the repository.
 
-Happy coding! ~ mk from emeks.
+Happy coding! ~ mk from [emeks](https://www.emeks.com.ar/en/index.html).
 
 ### Usefull links
 
