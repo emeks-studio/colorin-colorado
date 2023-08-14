@@ -60,7 +60,7 @@ So far so good, this matrix looks funny, but nothing special. Let's try with a d
 
 <img src="examples/pi_1000.txt.palette.eliptical.svg"  width="1000" height="1000">
 
-Oh! this one looks prettier than the previous one, but did you see a pattern? At least for me, I can't get too much from this picture. So the question I'm asking now is, what happen if we try to encode other sequence or number? Let's try with the first 1000 pair numbers (`2,4,6,8,10,...,996,998,1000`) but, for practice reasons, let's concatenate them, so in that case we obtain the following number `246810...9969981000`.
+Oh! this one looks prettier than the previous one, but did you see a pattern? At least for me, I can't get too much from this picture. So the question I'm asking now is, what happen if we try to encode other sequence or number? Let's try with the first 1000 even numbers (`2,4,6,8,10,...,996,998,1000`) but, for practice reasons, let's concatenate them, so in that case we obtain the following number `246810...9969981000`.
 
 ```nix
 λ cabal run image-encoder -- -s eliptical -f palette ./examples/pair_1000.txt ./palette/handmade.json
@@ -68,7 +68,7 @@ Oh! this one looks prettier than the previous one, but did you see a pattern? At
 
 <img src="examples/pair_1000.txt.palette.eliptical.svg"  width="1000" height="1000">
 
-Sweet! that shape show us certain pattern. What about odd numbers? should we expect another pattern, right?
+Sweet! that shape shows us certain pattern. What about odd numbers? we should expect another pattern, right?
 Ok, by applying the same logic we will have: `13579...995997999`.
 
 ```nix
