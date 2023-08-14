@@ -24,7 +24,7 @@ Available options:
                            spec file (expected format .json)
 ```
 
-As you can see, we have different combinations to play with, but for now we are going to focus on `matrix` and `elpitical` shapes with a handmade `palette` (specialized to point out numbers, characters and special bytes with colors that are easy to remember). Even more, for the following examples we just care about colors, so let me introduce a simplified reference map only with them:
+As you can see, we have different combinations to play with, but for now we are going to focus on `matrix` and `elpitical` shapes with a handmade `palette` (specialized to point out numbers, characters and special bytes with colors that are easy to remember). Even more, for the following examples we just care about numbers, so let me introduce a simplified reference map only with them:
 
 ```
 Number | Color                | Hex Format
